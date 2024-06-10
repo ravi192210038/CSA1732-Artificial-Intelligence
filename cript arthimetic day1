@@ -1,0 +1,29 @@
+import itertools
+
+def solve_cryptarithmetic(puzzle):
+    # Extract unique letters from the puzzle
+    letters = set(char for word in puzzle if word.isalpha())
+    # Filter out letters that start a word (cannot be 0)
+    start_letters = set(word[0] for word in puzzle.split() if word.isalpha())
+    letters = letters - start_letters
+
+    # Generate permutations of digits for the letters
+    for digits in itertools.permutations(range(10), len(letters)):
+        mapping = dict(zip(letters, digits))
+        # Replace letters with digits in the puzzle
+        equation = ''.join(mapping.get(char, char) for char in puzzle)
+        # Check if the equation is valid and digits don't start with 0
+        if all(map(lambda x: x != '0', equation.split())) and eval(equation):
+            return mapping
+    return None
+
+# Example usage
+puzzle = "SEND + MORE == MONEY"
+solution = solve_cryptarithmetic(puzzle)
+if solution:
+    print("Solution found:")
+    for letter, digit in solution.items():
+        print(f"{letter} = {digit}")
+else:
+    print("No solution found.")
+
